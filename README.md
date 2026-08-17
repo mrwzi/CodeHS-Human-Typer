@@ -48,9 +48,9 @@ https://github.com/mrwzi/CodeHS-Human-Typer/issues
 
 ## Source Code
 
-The source code for CodeHS Human Typer is currently not published in this repository.
+The source code for CodeHS Human Typer is available in the [`CodeHS`](./CodeHS) folder in this repository.
 
-This repository is used for documentation, announcements, support, and information about the extension.
+This repository also contains documentation, screenshots, support information, and updates for the extension.
 
 ## Disclaimer
 
