@@ -1,0 +1,22 @@
+{
+"update_url": "https://clients2.google.com/service/update2/crx",
+
+  "manifest_version": 3,
+  "name": "CodeHS Human Typer",
+  "version": "3.0",
+  "description": "Types code into CodeHS like a human.",
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "CodeHS Human Typer"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}

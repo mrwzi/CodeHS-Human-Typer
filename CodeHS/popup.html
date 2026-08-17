@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>CodeHS Human Typer</title>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --bg-soft: #111827;
+        --accent: #3b82f6;
+        --accent-soft: rgba(59, 130, 246, 0.15);
+        --border: #1f2937;
+        --text-main: #e5e7eb;
+        --text-muted: #9ca3af;
+        --radius: 10px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+body {
+  margin: 0;
+  padding: 0;          /* ✅ remove outer gap */
+  width: 360px;
+  max-height: 560px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: rgba(15, 23, 42, 0.95);  /* match the card */
+  color: var(--text-main);
+  overflow-y: auto;
+  display: block;      /* ✅ no center layout */
+}
+
+
+.card {
+  background: rgba(15, 23, 42, 0.95);
+  border-radius: 0;      /* ✅ fill popup cleanly */
+  border: 0;             /* optional: cleaner */
+  padding: 14px 14px 18px;
+  box-shadow: none;      /* ✅ no "floating card" look */
+  width: 100%;
+  max-width: none;
+}
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .title {
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .badge {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .subtitle {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 10px;
+      }
+
+      label {
+        font-size: 12px;
+        color: var(--text-muted);
+        display: block;
+        margin-bottom: 4px;
+      }
+
+textarea {
+  width: 100%;
+  height: 150px;      /* was 170px */
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 8px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text-main);
+  resize: vertical;
+  outline: none;
+}
+
+      textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.35);
+      }
+
+      .row {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+        align-items: flex-end;
+      }
+
+      /* generic selects + "normal" number inputs (NOT the steppers) */
+      select,
+      input[type="number"]:not(.num-input) {
+        width: 100%;
+        font-size: 12px;
+        padding: 6px 8px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        background: var(--bg-soft);
+        color: var(--text-main);
+        outline: none;
+      }
+
+      select:focus,
+      input[type="number"]:not(.num-input):focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.35);
+      }
+
+      .field-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 3px;
+      }
+
+      /* nicer number controls */
+      .num-control {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 6px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.95);
+        border: 1px solid var(--border);
+      }
+
+      .num-input {
+        width: 42px;
+        text-align: center;
+        font-size: 12px;
+        padding: 4px 4px;
+        border-radius: 999px;
+        border: 0;
+        background: transparent;
+        color: var(--text-main);
+        outline: none;
+      }
+
+      .num-input::-webkit-outer-spin-button,
+      .num-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      .num-input[type="number"] {
+        -moz-appearance: textfield;
+      }
+
+      .num-btn {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.9);
+        background: rgba(15, 23, 42, 1);
+        color: var(--text-main);
+        font-size: 15px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+      }
+
+      .num-btn:hover {
+        border-color: var(--accent);
+      }
+
+      .num-btn:active {
+        transform: translateY(1px);
+      }
+
+      .num-suffix {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-left: 2px;
+      }
+
+      #start {
+        width: 100%;
+        margin-top: 10px;
+        padding: 9px;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      /* Green when ready to start */
+      #start.start-mode {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+      }
+
+      /* Red when typing is running (Stop typing) */
+      #start.stop-mode {
+        background: linear-gradient(135deg, #ef4444, #b91c1c);
+      }
+
+      #start:active {
+        transform: translateY(1px);
+      }
+
+#status {
+  margin-top: 8px;
+  margin-bottom: 10px;   /* was 6 */
+  font-size: 11px;
+  color: var(--text-muted);
+  min-height: 14px;
+}
+
+      .hint {
+        margin-top: 6px;
+        font-size: 10px;
+        color: var(--text-muted);
+        border-radius: 8px;
+        padding: 6px 7px;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid var(--border);
+      }
+
+      .hint b {
+        color: var(--accent);
+      }
+
+.footer {
+  margin-top: -6px;          
+  padding-top: 0;       
+  font-size: 17px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: center;
+  opacity: 0.95;
+}
+
+
+.support-link {
+  margin-top: 12px;
+  margin-bottom: 14px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  width: 100%;
+  padding: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(2, 6, 23, 0.55);
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+
+.support-link:hover {
+  border-color: rgba(59, 130, 246, 0.8);
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.secondary-btn {
+  flex: 1;
+  padding: 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(2, 6, 23, 0.45);
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.secondary-btn:hover {
+  border-color: rgba(59, 130, 246, 0.8);
+  background: rgba(59, 130, 246, 0.10);
+}
+
+.secondary-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+.footer {
+  margin-top: -6px;          
+  padding-top: 0;       
+  font-size: 17px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: center;
+  opacity: 0.95;
+}
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: rgba(15, 23, 42, 0.95); /* same as your card */
+  width: 360px;
+}
+
+    </style>
+
+
+  </head>
+  <body>
+    <div class="card">
+      <div class="header">
+        <div class="title">CodeHS Human Typer</div>
+        <span class="badge" id="versionBadge">v3</span>
+      </div>
+
+      <div class="subtitle">
+        Paste your code here. When you click <b>Start typing</b>, this extension
+        will automatically type it into the open CodeHS editor at a human-like
+        speed.
+      </div>
+
+      <div>
+        <label for="code">Code to type</label>
+        <textarea
+          id="code"
+          placeholder="Paste your Python / Java / JavaScript code here..."
+        ></textarea>
+      </div>
+
+      <div class="row">
+        <div style="flex: 1;">
+          <div class="field-label">Typing speed</div>
+          <select id="speed">
+            <option value="slow">Slow</option>
+            <option value="normal" selected>Normal</option>
+            <option value="fast">Fast</option>
+            <option value="auto">Auto (human-like)</option>
+          </select>
+        </div>
+
+        <div style="flex: 1.1;" id="autoRunBlock">
+          <div class="field-label">Auto-click “Run” every</div>
+          <div class="num-control">
+            <button
+              type="button"
+              class="num-btn"
+              data-target="linesPerRun"
+              data-delta="-1"
+            >
+              −
+            </button>
+            <input
+              id="linesPerRun"
+              class="num-input"
+              type="number"
+              min="0"
+              value="0"
+            />
+            <button
+              type="button"
+              class="num-btn"
+              data-target="linesPerRun"
+              data-delta="1"
+            >
+              +
+            </button>
+            <span class="num-suffix">lines</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- This row is shown/hidden by JS when linesPerRun is 0 or >0 -->
+      <div class="row" id="runWaitRow">
+        <div style="flex: 1;">
+          <div class="field-label">Run wait (seconds)</div>
+          <div class="num-control">
+            <button
+              type="button"
+              class="num-btn"
+              data-target="runWaitSec"
+              data-delta="-1"
+            >
+              −
+            </button>
+            <input
+              id="runWaitSec"
+              class="num-input"
+              type="number"
+              min="1"
+              value="20"
+            />
+            <button
+              type="button"
+              class="num-btn"
+              data-target="runWaitSec"
+              data-delta="1"
+            >
+              +
+            </button>
+            <span class="num-suffix">sec</span>
+          </div>
+        </div>
+      </div>
+
+<div class="hint" id="tipBox">
+  <b>Tips:</b> Set <b>0</b> lines to disable auto-run. Run wait controls
+  how long to pause after clicking <b>Run</b> before typing continues.
+</div>
+
+<label style="display:flex; gap:8px; align-items:center; margin:0;">
+  <input type="checkbox" id="showProgress" />
+  Show progress bar
+</label>
+
+<button id="start" class="start-mode">Start typing</button>
+
+<div class="btn-row">
+  <button id="pauseBtn" class="secondary-btn" type="button" disabled>Pause</button>
+  <button id="resetBtn" class="secondary-btn" type="button">Reset</button>
+</div>
+
+<div id="status"></div>
+
+<a
+  id="supportLink"
+  class="support-link"
+  href="https://www.paypal.com/paypalme/mahanheidari2604"
+  target="_blank"
+  rel="noopener"
+>
+  ☕🥐 Buy me a croissant
+</a>
+
+
+      <div class="footer">
+        Made by an Eastwood student for Eastwood students
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
