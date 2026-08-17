@@ -29,9 +29,9 @@ https://chromewebstore.google.com/detail/codehs-human-typer/gonnphhhlabhlggohlip
 ## Screenshots
 
 <p align="center">
-  <img src="image-1280x800.jpg" width="32%">
-  <img src="image-1280x800 (1).jpg" width="32%">
-  <img src="image-1280x800 (2).jpg" width="32%">
+  <img src="CodeHS/image-1280x800.jpg" width="32%">
+  <img src="CodeHS/image-1280x800 (1).jpg" width="32%">
+  <img src="CodeHS/ima1280x800.jpg" width="32%">
 </p>
 
 ## Privacy
